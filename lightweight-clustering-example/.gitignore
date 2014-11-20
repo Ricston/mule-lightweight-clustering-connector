@@ -1,0 +1,9 @@
+.settings
+.studio
+.project
+.classpath
+flows
+.mule
+target
+bin
+test*

@@ -1,0 +1,7 @@
+<!-- BEGIN_INCLUDE(lightweight-clustering:enqueue) -->
+    <lightweight-clustering:enqueue queue="queueName" />
+<!-- END_INCLUDE(lightweight-clustering:enqueue) -->
+<!-- BEGIN_INCLUDE(lightweight-clustering:dequeue) -->
+    <lightweight-clustering:dequeue queue="queueName" />
+<!-- END_INCLUDE(lightweight-clustering:dequeue) -->
+

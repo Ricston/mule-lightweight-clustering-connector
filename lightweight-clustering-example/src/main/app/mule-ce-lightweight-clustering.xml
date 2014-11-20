@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:lightweight-clustering="http://www.mulesoft.org/schema/mule/lightweight-clustering" xmlns:context="http://www.springframework.org/schema/context" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.5.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.mulesoft.org/schema/mule/lightweight-clustering http://www.mulesoft.org/schema/mule/lightweight-clustering/current/mule-lightweight-clustering.xsd">
+    <lightweight-clustering:config name="LightweightClustering" instanceName="mule-ce-lighweight-clustering" doc:name="LightweightClustering"/>
+
+    <context:property-placeholder location="classpath:application.properties"/>
+	
+    <flow name="fileConnectorFlow" doc:name="fileConnectorFlow">
+        <file:inbound-endpoint path="./test1" responseTimeout="10000" doc:name="File" moveToDirectory="./test1-ready"/>
+        <logger level="INFO" doc:name="Logger" message="File read with filename #[message.inboundProperties.'filename']"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+    </flow>
+    <flow name="pollingFlow" doc:name="pollingFlow">
+        <poll doc:name="Poll">
+            <fixed-frequency-scheduler frequency="60000"/>
+            <set-payload value="#['Poller is working']" doc:name="Set Payload"/>
+        </poll>
+        <logger message="#[message.payload]" level="INFO" doc:name="Logger"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <lightweight-clustering:enqueue config-ref="LightweightClustering" queue="test.queue" doc:name="LightweightClustering test.queue"/>
+    </flow>
+    <flow name="clusteringDequeue" doc:name="clusteringDequeue">
+        <lightweight-clustering:dequeue config-ref="LightweightClustering" queue="test.queue" doc:name="LightweightClustering test.queue"/>
+        <logger message="Received message from cluster #[message.payload]" level="INFO" doc:name="Logger"/>
+    </flow>
+</mule>
