@@ -47,6 +47,13 @@ public class LightweightClusteringConnector {
 	@Configurable
 	@Optional
 	private String instanceName;
+	
+	/**
+	 * Weather or not to only allow one instance to poll
+	 */
+	@Configurable
+	@Optional
+	private Boolean clusterSharedResources = true;
 
 	/**
 	 * Initialise the connector by creating a cluster instance and initialise it. We had some issues with <code>@Start and <code>@Connect</code>, hence we are
@@ -57,7 +64,7 @@ public class LightweightClusteringConnector {
 	public synchronized void initialiseLightweightClusteringConnector() {
 		if (clusteringManager == null) {
 			clusteringManager = new LightweightClusteringManager(muleContext, instanceName);
-			clusteringManager.initialiseCluster();
+			clusteringManager.initialiseCluster(clusterSharedResources);
 		}
 	}
 
@@ -141,6 +148,22 @@ public class LightweightClusteringConnector {
 	 */
 	public void setInstanceName(String instanceName) {
 		this.instanceName = instanceName;
+	}
+
+	/**
+	 * 
+	 * @return Weather or not to only allow one instance to poll
+	 */
+	public boolean isClusterSharedResources() {
+		return clusterSharedResources;
+	}
+
+	/**
+	 * 
+	 * @param clusterSharedResources Weather or not to only allow one instance to poll
+	 */
+	public void setClusterSharedResources(boolean clusterSharedResources) {
+		this.clusterSharedResources = clusterSharedResources;
 	}
 
 }

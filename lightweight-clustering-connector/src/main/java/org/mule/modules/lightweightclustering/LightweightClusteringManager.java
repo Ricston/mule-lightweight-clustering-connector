@@ -37,7 +37,7 @@ public class LightweightClusteringManager {
 	/**
 	 * Start the cluster and add the listener to check if this node became the master to enable polling.
 	 */
-	public void initialiseCluster() {
+	public void initialiseCluster(boolean clusterSharedResources) {
 
 		// set the Mule polling controller to our LightWeightClusteringPollingController
 		context.setPollingController(pollingController);
@@ -46,11 +46,13 @@ public class LightweightClusteringManager {
 		clusterInstance = initialiseClusterInstance(instanceName);
 		Cluster cluster = clusterInstance.getCluster();
 
-		// set listener to set polling master whenever a node is down
-		cluster.addMembershipListener(new LightweightClusteringMembershipListener(this));
+		if (clusterSharedResources){
+			// set listener to set polling master whenever a node is down
+			cluster.addMembershipListener(new LightweightClusteringMembershipListener(this));
+		}
 
 		// check if we are the master polling instance
-		configurePrimaryPollingInstance(cluster);
+		configurePrimaryPollingInstance(cluster, clusterSharedResources);
 	}
 
 	/**
@@ -76,16 +78,28 @@ public class LightweightClusteringManager {
 	}
 
 	/**
+	 * Check if the current node is the master, or if we are clustering shared resources at all, if yes, set this node to poll
+	 * 
+	 * @param cluster
+	 *            The Hazelcast cluster
+	 * @param clusterSharedResources
+	 *            Weather or not to cluster shared resources
+	 */
+	protected void configurePrimaryPollingInstance(Cluster cluster, boolean clusterSharedResources) {
+		if (!clusterSharedResources || isMaster(cluster)) {
+			pollingController.setPrimaryPollingInstance(true);
+			logger.info("This node is now the PRIMARY polling instance");
+		}
+	}
+	
+	/**
 	 * Check if the current node is the master, if yes, set this node to poll
 	 * 
 	 * @param cluster
 	 *            The Hazelcast cluster
 	 */
 	protected void configurePrimaryPollingInstance(Cluster cluster) {
-		if (isMaster(cluster)) {
-			pollingController.setPrimaryPollingInstance(true);
-			logger.info("This node is now the PRIMARY polling instance");
-		}
+		configurePrimaryPollingInstance(cluster, true);
 	}
 
 	/**
@@ -100,7 +114,7 @@ public class LightweightClusteringManager {
 		config.setInstanceName(instanceName);
 		return Hazelcast.newHazelcastInstance(config);
 	}
-	
+
 	/**
 	 * Set the Mule Context
 	 */
