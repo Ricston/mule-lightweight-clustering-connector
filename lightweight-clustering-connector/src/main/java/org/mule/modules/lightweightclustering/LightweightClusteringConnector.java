@@ -7,43 +7,34 @@ package org.mule.modules.lightweightclustering;
 
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.mule.api.ConnectionException;
 import org.mule.api.MuleContext;
-import org.mule.api.annotations.Connect;
-import org.mule.api.annotations.ConnectStrategy;
-import org.mule.api.annotations.ConnectionIdentifier;
+import org.mule.api.annotations.Configurable;
 import org.mule.api.annotations.Connector;
-import org.mule.api.annotations.Disconnect;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.Source;
-import org.mule.api.annotations.ValidateConnection;
-import org.mule.api.annotations.param.ConnectionKey;
+import org.mule.api.annotations.lifecycle.Stop;
+import org.mule.api.annotations.param.Optional;
 import org.mule.api.annotations.param.Payload;
 import org.mule.api.callback.SourceCallback;
 
 import com.hazelcast.core.IQueue;
 
 /**
- * Mule Lightweight Clustering Connector 
+ * Mule Lightweight Clustering Connector
  * 
  * @author Ricston Ltd.
  */
 @Connector(name = "lightweight-clustering", schemaVersion = "1.0", friendlyName = "LightweightClustering")
 public class LightweightClusteringConnector {
-	/**
-	 * The cluster instance name
-	 */
-//	@Optional
-//	@Configurable
-//	private String instanceName;
 
 	/**
 	 * The Mule Context
 	 */
 	@Inject
-	private MuleContext context;
+	private MuleContext muleContext;
 
 	/**
 	 * The lightweight clustering manager
@@ -51,34 +42,34 @@ public class LightweightClusteringConnector {
 	private LightweightClusteringManager clusteringManager;
 
 	/**
-	 * Initialise the connector by creating a cluster instance and initialise it
+	 * The cluster instance name
 	 */
-//	@Start
-	@Connect
-	public void initialiseLightweightClusteringConnector(@ConnectionKey String instanceName) throws ConnectionException {
-		clusteringManager = new LightweightClusteringManager(context, instanceName);
-		clusteringManager.initialiseCluster();
+	@Configurable
+	@Optional
+	private String instanceName;
+
+	/**
+	 * Initialise the connector by creating a cluster instance and initialise it. We had some issues with @Start and @Connect, hence we are using
+	 * @PostConstruct. The reason is that with @Start, @Source was being invoked before @Start in a separate thread, while @Connect is only invoked lazily.
+	 */
+	@PostConstruct
+	public synchronized void initialiseLightweightClusteringConnector() {
+		if (clusteringManager == null) {
+			clusteringManager = new LightweightClusteringManager(muleContext, instanceName);
+			clusteringManager.initialiseCluster();
+		}
 	}
 
 	/**
 	 * Stop the connector by shutting down the clustering instance
 	 */
-//	@Stop
-	@Disconnect
-	public void disposeLightweightClusteringConnector() {
-		clusteringManager.disposeCluster();
+	@Stop
+	public synchronized void disposeLightweightClusteringConnector() {
+		if (clusteringManager != null) {
+			clusteringManager.disposeCluster();
+			clusteringManager = null;
+		}
 	}
-	
-	@ConnectionIdentifier
-	public String connectionIdentifier(){
-		return "001";
-	}
-	
-	@ValidateConnection
-	public boolean validateConnection(){
-		return clusteringManager != null;
-	}
-	
 
 	/**
 	 * Enqueue message from clustered queue
@@ -119,27 +110,10 @@ public class LightweightClusteringConnector {
 
 	/**
 	 * 
-	 * @return The cluster instance name
-	 */
-//	public String getInstanceName() {
-//		return instanceName;
-//	}
-
-	/**
-	 * 
-	 * @param instanceName
-	 *            The cluster instance name
-	 */
-//	public void setInstanceName(String instanceName) {
-//		this.instanceName = instanceName;
-//	}
-
-	/**
-	 * 
 	 * @return The Mule Context
 	 */
-	public MuleContext getContext() {
-		return context;
+	public MuleContext getMuleContext() {
+		return muleContext;
 	}
 
 	/**
@@ -147,8 +121,25 @@ public class LightweightClusteringConnector {
 	 * @param context
 	 *            The Mule Context
 	 */
-	public void setContext(MuleContext context) {
-		this.context = context;
+	public void setMuleContext(MuleContext muleContext) {
+		this.muleContext = muleContext;
+	}
+
+	/**
+	 * 
+	 * @return The cluster instance name
+	 */
+	public String getInstanceName() {
+		return instanceName;
+	}
+
+	/**
+	 * 
+	 * @param instanceName
+	 *            The cluster instance name
+	 */
+	public void setInstanceName(String instanceName) {
+		this.instanceName = instanceName;
 	}
 
 }
