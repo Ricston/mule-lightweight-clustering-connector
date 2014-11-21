@@ -8,6 +8,7 @@ package org.mule.modules.lightweightclustering;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.mule.api.MuleContext;
@@ -15,7 +16,6 @@ import org.mule.api.annotations.Configurable;
 import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.Source;
-import org.mule.api.annotations.lifecycle.Stop;
 import org.mule.api.annotations.param.Optional;
 import org.mule.api.annotations.param.Payload;
 import org.mule.api.callback.SourceCallback;
@@ -49,8 +49,9 @@ public class LightweightClusteringConnector {
 	private String instanceName;
 
 	/**
-	 * Initialise the connector by creating a cluster instance and initialise it. We had some issues with @Start and @Connect, hence we are using
-	 * @PostConstruct. The reason is that with @Start, @Source was being invoked before @Start in a separate thread, while @Connect is only invoked lazily.
+	 * Initialise the connector by creating a cluster instance and initialise it. We had some issues with <code>@Start and <code>@Connect</code>, hence we are
+	 * using <code>@PostConstruct</code>. The reason is that with <code>@Start</code>, <code>@Source</code> was being invoked before <code>@Start</code> in a
+	 * separate thread, while <code>@Connect</code> is only invoked lazily. See https://www.mulesoft.org/jira/browse/DEVKIT-1184
 	 */
 	@PostConstruct
 	public synchronized void initialiseLightweightClusteringConnector() {
@@ -63,7 +64,7 @@ public class LightweightClusteringConnector {
 	/**
 	 * Stop the connector by shutting down the clustering instance
 	 */
-	@Stop
+	@PreDestroy
 	public synchronized void disposeLightweightClusteringConnector() {
 		if (clusteringManager != null) {
 			clusteringManager.disposeCluster();
