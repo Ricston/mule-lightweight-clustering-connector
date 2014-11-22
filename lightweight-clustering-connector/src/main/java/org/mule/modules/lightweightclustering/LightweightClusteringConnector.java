@@ -19,7 +19,10 @@ import org.mule.api.annotations.Source;
 import org.mule.api.annotations.param.Optional;
 import org.mule.api.annotations.param.Payload;
 import org.mule.api.callback.SourceCallback;
+import org.mule.api.store.ObjectStore;
+import org.mule.api.store.ObjectStoreException;
 
+import com.hazelcast.core.IMap;
 import com.hazelcast.core.IQueue;
 
 /**
@@ -28,7 +31,7 @@ import com.hazelcast.core.IQueue;
  * @author Ricston Ltd.
  */
 @Connector(name = "lightweight-clustering", schemaVersion = "1.0", friendlyName = "LightweightClustering")
-public class LightweightClusteringConnector {
+public class LightweightClusteringConnector implements ObjectStore<Serializable> {
 
 	/**
 	 * The Mule Context
@@ -54,6 +57,8 @@ public class LightweightClusteringConnector {
 	@Configurable
 	@Optional
 	private Boolean clusterSharedResources = true;
+	
+	private IMap<Serializable, Serializable> objectStore;
 
 	/**
 	 * Initialise the connector by creating a cluster instance and initialise it. We had some issues with <code>@Start and <code>@Connect</code>, hence we are
@@ -65,6 +70,8 @@ public class LightweightClusteringConnector {
 		if (clusteringManager == null) {
 			clusteringManager = new LightweightClusteringManager(muleContext, instanceName);
 			clusteringManager.initialiseCluster(clusterSharedResources);
+			
+			objectStore = clusteringManager.getClusterInstance().getMap("objectStore");
 		}
 	}
 
@@ -74,6 +81,9 @@ public class LightweightClusteringConnector {
 	@PreDestroy
 	public synchronized void disposeLightweightClusteringConnector() {
 		if (clusteringManager != null) {
+			objectStore.clear();
+			objectStore = null;
+			
 			clusteringManager.disposeCluster();
 			clusteringManager = null;
 		}
@@ -164,6 +174,36 @@ public class LightweightClusteringConnector {
 	 */
 	public void setClusterSharedResources(boolean clusterSharedResources) {
 		this.clusterSharedResources = clusterSharedResources;
+	}
+
+	@Override
+	public boolean contains(Serializable key) throws ObjectStoreException {
+		return objectStore.containsKey(key);
+	}
+
+	@Override
+	public void store(Serializable key, Serializable value) throws ObjectStoreException {
+		objectStore.put(key, value);
+	}
+
+	@Override
+	public Serializable retrieve(Serializable key) throws ObjectStoreException {
+		return objectStore.get(key);
+	}
+
+	@Override
+	public Serializable remove(Serializable key) throws ObjectStoreException {
+		return objectStore.remove(key);
+	}
+
+	@Override
+	public boolean isPersistent() {
+		return false;
+	}
+
+	@Override
+	public void clear() throws ObjectStoreException {
+		objectStore.clear();
 	}
 
 }
