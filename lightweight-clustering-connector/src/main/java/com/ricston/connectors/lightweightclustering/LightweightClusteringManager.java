@@ -3,7 +3,7 @@
  * a copy of which has been included with this distribution in the LICENSE.md file.
  */
 
-package org.mule.modules.lightweightclustering;
+package com.ricston.connectors.lightweightclustering;
 
 import org.mule.DefaultMuleContext;
 import org.mule.api.MuleContext;
