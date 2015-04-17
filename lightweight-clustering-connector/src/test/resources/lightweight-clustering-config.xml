@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:lightweight-clustering="http://www.mulesoft.org/schema/mule/lightweight-clustering" xmlns:context="http://www.springframework.org/schema/context" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:lightweight-clustering="http://www.mulesoft.org/schema/mule/lightweight-clustering" 
+xmlns:context="http://www.springframework.org/schema/context" 
+xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+xmlns:file="http://www.mulesoft.org/schema/mule/file" 
+xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore"
+xmlns="http://www.mulesoft.org/schema/mule/core" 
+xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.5.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
@@ -8,19 +14,15 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-http://www.mulesoft.org/schema/mule/lightweight-clustering http://www.mulesoft.org/schema/mule/lightweight-clustering/current/mule-lightweight-clustering.xsd">
+http://www.mulesoft.org/schema/mule/lightweight-clustering http://www.mulesoft.org/schema/mule/lightweight-clustering/current/mule-lightweight-clustering.xsd
+http://www.mulesoft.org/schema/mule/objectstore http://www.mulesoft.org/schema/mule/objectstore/current/mule-objectstore.xsd">
     
     <lightweight-clustering:config name="LightweightClustering" instanceName="lighweight-clustering-instance" clusterSharedResources="true" doc:name="LightweightClustering"/>
-
-    <flow name="fileConnectorFlow" doc:name="fileConnectorFlow">
-        <file:inbound-endpoint path="./test1" responseTimeout="10000" doc:name="File" moveToDirectory="./test1-ready"/>
-        <logger level="INFO" doc:name="Logger" message="File read with filename #[message.inboundProperties.'filename']"/>
-        <object-to-string-transformer doc:name="Object to String"/>
-    </flow>
-    
+	<objectstore:config name="objectStore" objectStore-ref="LightweightClustering" />
+	
     <flow name="pollingFlow" doc:name="pollingFlow">
         <poll doc:name="Poll">
-            <fixed-frequency-scheduler frequency="500"/>
+            <fixed-frequency-scheduler frequency="1000"/>
             <set-payload value="#['Poller is working']" doc:name="Set Payload"/>
         </poll>
         <logger message="#[message.payload]" level="INFO" doc:name="Logger"/>
@@ -31,5 +33,24 @@ http://www.mulesoft.org/schema/mule/lightweight-clustering http://www.mulesoft.o
     <flow name="clusteringDequeue" doc:name="clusteringDequeue">
         <lightweight-clustering:dequeue config-ref="LightweightClustering" queue="test.queue" doc:name="LightweightClustering test.queue"/>
         <logger message="Received message from cluster #[message.payload]" level="INFO" doc:name="Logger"/>
+        <file:outbound-endpoint path="./items" />
     </flow>
+    
+    <flow name="objectStore-Store" doc:name="objectStore-Store">
+        <objectstore:store key="key1" value-ref="#[payload]" config-ref="objectStore"/>
+    </flow>
+    
+    <flow name="objectStore-Retrieve" doc:name="objectStore-Retrieve">
+        <objectstore:retrieve key="key1" config-ref="objectStore"/>
+    </flow>
+    
+    <flow name="objectStore-Contains" doc:name="objectStore-Retrieve">
+        <objectstore:contains key="key1" config-ref="objectStore"/>
+    </flow>
+    
+    <flow name="objectStore-Remove" doc:name="objectStore-Remove">
+        <objectstore:remove key="key1" config-ref="objectStore"/>
+    </flow>
+    
+    
 </mule>

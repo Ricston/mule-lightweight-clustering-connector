@@ -10,10 +10,30 @@
 
 package com.ricston.connectors.lightweightclustering;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mule.modules.tests.ConnectorTestCase;
+import org.mule.util.FileUtils;
 
 public class LightweightClusteringConnectorTest extends ConnectorTestCase {
+	
+	private static final File items = new File("./items");
+	
+	public LightweightClusteringConnectorTest(){
+		this.setDisposeContextPerClass(true);
+	}
+	
+	@BeforeClass
+	public static void cleanDirectory() throws IOException{
+		//remove items from the items folder
+		FileUtils.deleteQuietly(items);
+	}
     
     @Override
     protected String getConfigResources() {
@@ -21,8 +41,22 @@ public class LightweightClusteringConnectorTest extends ConnectorTestCase {
     }
 
     @Test
-    public void testFlow() throws Exception {
-    	Thread.sleep(300000);
-//        runFlowAndExpect("testFlow", "Another string");
+    public void testPollingAndQueue() throws Exception {
+    	
+    	//poller is creating a message every second
+    	//5sec of waiting time should create around 5 messages 
+    	Thread.sleep(5000);
+    	
+    	Collection<?> itemFiles = FileUtils.listFiles(items, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+    	Assert.assertTrue(itemFiles.size() >= 5);
+    }
+    
+    @Test
+    public void testObjectStore() throws Exception{
+    	runFlow("objectStore-Store", "test");
+    	runFlowAndExpect("objectStore-Retrieve", "test");
+    	runFlowAndExpect("objectStore-Contains", true);
+    	runFlow("objectStore-Remove", "test");
+    	runFlowAndExpect("objectStore-Contains", false);
     }
 }
