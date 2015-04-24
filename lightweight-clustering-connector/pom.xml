@@ -1,58 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-        
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.mule.modules</groupId>
-    <artifactId>lightweight-clustering-connector</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>mule-module</packaging>
-    <name>Mule LightweightClustering Anypoint Connector</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ricston.connectors</groupId>
+	<artifactId>lightweight-clustering-connector</artifactId>
+	<version>1.0.0</version>
+	<packaging>mule-module</packaging>
+	<name>Mule LightweightClustering Anypoint Connector</name>
 
 
-    <parent>
-        <groupId>org.mule.tools.devkit</groupId>
-        <artifactId>mule-devkit-parent</artifactId>
-        <version>3.5.2</version>
-    </parent>
+	<parent>
+		<groupId>org.mule.tools.devkit</groupId>
+		<artifactId>mule-devkit-parent</artifactId>
+		<version>3.6.1</version>
+	</parent>
 
-    <properties>
-        <junit.version>4.9</junit.version>
-        <mockito.version>1.8.2</mockito.version>
-        <jersey.version>1.16</jersey.version>
-        <gson.version>2.2.2</gson.version>
-        <jdk.version>1.6</jdk.version>
-        <category>Community</category>
-        <licensePath>LICENSE.md</licensePath>
-        <devkit.studio.package.skip>false</devkit.studio.package.skip>
-        <hazelcast.version>3.1.6</hazelcast.version>
-    </properties>
-    <dependencies>
-        <dependency>
-            <groupId>eclipse</groupId>
-            <artifactId>eclipse-runtime</artifactId>
-            <version>2.1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <dependency>
+	<properties>
+			<jdk.version>1.6</jdk.version>
+		<category>Community</category>
+		<licensePath>LICENSE.md</licensePath>
+		<devkit.studio.package.skip>false</devkit.studio.package.skip>
+		<hazelcast.version>3.1.5</hazelcast.version>
+		<objectstore-module.version>1.3.1</objectstore-module.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>eclipse</groupId>
+			<artifactId>eclipse-runtime</artifactId>
+			<version>2.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast</artifactId>
 			<version>${hazelcast.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-file</artifactId>
 			<version>${mule.version}</version>
 			<scope>test</scope>
 		</dependency>
-    </dependencies>
-    <repositories>
-        <repository>
-            <id>mulesoft-releases</id>
-            <name>MuleSoft Releases Repository</name>
-            <url>http://repository.mulesoft.org/releases/</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
+
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-objectstore</artifactId>
+			<version>${objectstore-module.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<repositories>
+		<repository>
+			<id>mulesoft-releases</id>
+			<name>MuleSoft Releases Repository</name>
+			<url>http://repository.mulesoft.org/releases/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
 </project>

@@ -3,4 +3,5 @@
     <name>mule-ce-lightweight-clustering</name>
     <description></description>
     <muleExtension name="LightweightClustering" qualifier="org.mule.tooling.ui.contribution.lightweight-clustering.3.5.0"/>
+    <muleExtension name="ObjectStore" qualifier="org.mule.tooling.ui.contribution.objectstore"/>
 </mule-project>

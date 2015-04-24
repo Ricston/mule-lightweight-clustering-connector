@@ -31,7 +31,7 @@ public class LightweightClusteringConnectorTest extends ConnectorTestCase {
 	
 	@BeforeClass
 	public static void cleanDirectory() throws IOException{
-		//remove items from the items folder
+//		remove items from the items folder
 		FileUtils.deleteQuietly(items);
 	}
     
