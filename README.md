@@ -1,0 +1,1 @@
+# mule-lightweight-clustering-connector
