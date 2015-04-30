@@ -30,7 +30,7 @@ import com.hazelcast.core.IQueue;
  * 
  * @author Ricston Ltd.
  */
-@Connector(name = "lightweight-clustering", schemaVersion = "1.0", friendlyName = "LightweightClustering")
+@Connector(name = "lightweight-clustering", schemaVersion = "1.0", friendlyName = "Lightweight Clustering")
 public class LightweightClusteringConnector implements ObjectStore<Serializable> {
 
 	/**
@@ -52,7 +52,7 @@ public class LightweightClusteringConnector implements ObjectStore<Serializable>
 	private String instanceName;
 	
 	/**
-	 * Weather or not to only allow one instance to poll
+	 * Whether or not to only allow one instance to poll
 	 */
 	@Configurable
 	@Optional
@@ -136,7 +136,7 @@ public class LightweightClusteringConnector implements ObjectStore<Serializable>
 
 	/**
 	 * 
-	 * @param context
+	 * @param muleContext
 	 *            The Mule Context
 	 */
 	public void setMuleContext(MuleContext muleContext) {

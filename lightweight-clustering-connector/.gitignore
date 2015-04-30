@@ -6,4 +6,6 @@ flows
 .mule
 target
 bin
-
+.gitignore
+*.iml
+.idea
