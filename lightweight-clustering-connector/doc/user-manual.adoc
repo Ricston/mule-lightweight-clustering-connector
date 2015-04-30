@@ -49,7 +49,7 @@ Supported Mule Runtime Versions: 3.6.x
 
 === Installing
 
-You can "test drive" the LightWeight connector by installing it on Anypoint™ Studio. Follow the instructions to http://www.mulesoft.org/documentation/display/current/Download+and+Launch+Anypoint+Studio[download and launch Anypoint™ Studio], then follow the steps below to install the connector.
+You can "test drive" the LightWeight Clustering connector by installing it on Anypoint™ Studio. Follow the instructions to http://www.mulesoft.org/documentation/display/current/Download+and+Launch+Anypoint+Studio[download and launch Anypoint™ Studio], then follow the steps below to install the connector.
 
 To install the Lightweight Clustering connector in Anypoint Studio:
 
