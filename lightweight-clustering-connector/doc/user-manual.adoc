@@ -10,28 +10,11 @@ The Lightweight Clustering connector offers clustering features to both the Comm
 .. Prerequisites
 .. Requirements
 .. Dependencies
-... Versions
-... Consumers
 
 . Installing & Configuring
 .. Installing
 .. Configuring
-.. Upgrading from a Previous Version
 
-. Using the Connector
-.. Use Cases and Demos
-.. Best Practices
-.. Tips
-.. Integration Patterns
-.. Adding to a Flow
-.. Query Types
-.. Increasing Performance
-
-. Example Use Case
-..  Anypoint™ Studio  Visual Editor | XML Editor
-.. Example Code
-. Demo
-. F.A.Q
 . See Also
 
 ---
@@ -92,7 +75,7 @@ To use the Lightweight Clustering connector, you must configure:
 * A global Lightweight Clustering element for use by all the Lightweight Clustering connectors in an application.
 - _Anypoint™ Studio Visual Editor_
 . Click the *Global Elements* tab at the base of the canvas, then click *Create*.
-. In the *Choose Global Type* menu, use the filter to locate and select *NetSuite*, then click *OK*.
+. In the *Choose Global Type* menu, use the filter to locate and select *Lightweight Clustering*, then click *OK*.
 . Configure the parameters according to the table below.
 +
 |===
@@ -131,7 +114,7 @@ http://www.mulesoft.org/schema/mule/lightweight-clustering http://www.mulesoft.o
 |Field						|Description
 
 |*Display Name*				|Enter a unique label for the connector in your application.
-|*Connector Configuration*	|Connect to a global element linked to this connector. Global elements encapsulate reusable data about the connection to the target resource or service. Select the global NetSuite connector element that you just created.
+|*Connector Configuration*	|Connect to a global element linked to this connector. Global elements encapsulate reusable data about the connection to the target resource or service. Select the global Lightweight Clustering connector element that you just created.
 |*Operation*				|Select the action this component must perform.
 |===
 +

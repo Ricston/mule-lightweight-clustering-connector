@@ -1,0 +1,20 @@
+= Lightweight Clustering Anypoint™ Connector
+
+
+Offers clustering features to Mule CE and EE.
+
+== Author
+Ricston Ltd.
+
+== Supported Mule runtime versions
+Mule 3.6.x
+
+== Installation 
+
+You can access the full documentation http://www.mulesoft.org/documentation/display/current/Lightweight+Clustering+Connector[here].
+
+For more information click https://github.com/Ricston/mule-lightweight-clustering-connector/wiki[here].
+
+== Reporting Issues
+
+We use GitHub:Issues for tracking issues with this connector. You can report new issues at this link https://github.com/Ricston/mule-lightweight-clustering-connector/issues.
